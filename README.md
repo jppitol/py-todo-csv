@@ -1,4 +1,4 @@
-# simple-todo
+# py-todo-csv
 
 The simplest python ToDo app.
 

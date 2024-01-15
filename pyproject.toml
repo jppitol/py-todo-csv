@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "simple-todo"
+name = "py-todo-csv"
 version = "0.1.0"
 description = "The simplest python ToDo app"
 authors = ["jppitol <joaopedropitol@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-todo = "simple_todo.main:app"
+todo = "py_todo_csv.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.11"
