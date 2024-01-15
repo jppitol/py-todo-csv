@@ -1,6 +1,5 @@
 import os
 import platform
-from datetime import datetime, timedelta
 import typer
 import pandas as pd
 from tabulate import tabulate
@@ -12,53 +11,6 @@ caminho_csv = os.path.join(pasta, ".list.csv")
 
 sys = platform.system()
 
-
-def is_bissexto(x: int):
-    if str(x)[-2:] == "00":
-        if x % 400:
-            return True
-    else:
-        if x % 4 == 0:
-            return True
-        else:
-            return False
-
-
-def time_transform(x):
-    time_task = datetime.strptime(x, "%Y-%M-%d %H:%M:%S")
-    diff = datetime.now() - time_task
-    diff = diff.total_seconds
-    types_time = {0: 0, 60 * 60 * 24 * 7: 0, 60 * 60 * 24: 0, 60 * 60: 0, 60: 0, 1: 0}
-    types_time_string = [
-        " years,",
-        " weeks,",
-        " days,",
-        " hours,",
-        " minutes,",
-        " seconds",
-    ]
-    if is_bissexto(datetime.today().year()):
-        types_time[0] = 60 * 60 * 24 * 366
-    else:
-        types_time[0] = 60 * 60 * 24 * 365
-    temp = diff
-    for key in types_time.keys():
-        count = 0
-        while temp >= key:
-            temp -= key
-            count += 1
-        types_time.update({key: count})
-    final_string = []
-    i = 0
-    for value in types_time.values():
-        if value:
-            if value == 1:
-                if i != 5:
-                    types_time_string[i].replace("s", "")
-                else:
-                    types_time_string[5] = " second"
-            final_string.append(f"{value}{types_time_string[i]}")
-        i += 1
 
 
 @app.command()
@@ -78,8 +30,6 @@ def view():
         # change true/false to cool emojis
         emoji_map = {True: "✅", False: "❌"}
         file["Finished"] = file["Finished"].map(emoji_map)
-        # make time look cool
-        file["Time"] = file["Time"].apply()
         if not empty:
             if sys == "Windows":
                 os.system("cls")
@@ -92,12 +42,12 @@ def view():
                 print("You've finished all of your tasks!")
                 os.remove(caminho_csv)
                 with open(caminho_csv, "w") as file:
-                    file.write("Task,Finished,Time")
+                    file.write("Task,Finished")
 
     except FileNotFoundError:
         with open(caminho_csv, "w") as file:
             print("You didn't add any ToDos!")
-            file.write("Task,Finished,Time")
+            file.write("Task,Finished")
 
 
 @app.command()
@@ -107,9 +57,8 @@ def add(item: str):
 
     Usage: add "your todo here"
     """
-    today = datetime.now().strftime("%Y-%M-%d %H:%M:%S")
     with open(caminho_csv, "a+") as file:
-        file.write(f"\n{item},False,{today}")
+        file.write(f"\n{item},False")
 
 
 @app.command()
@@ -129,10 +78,10 @@ def mark(row: int):
             else:
                 print(f"Task {row} was already finished!")
         else:
-            print("Please inform valid rows")
+            print("Please inform a valid row")
     except FileNotFoundError:
         with open(caminho_csv, "w") as file:
-            file.write("Task,Finished,Time")
+            file.write("Task,Finished")
 
 
 @app.command()
@@ -152,4 +101,4 @@ def rename(row: int, task: str):
             print("Please inform a valid row")
     except FileNotFoundError:
         with open(caminho_csv, "w") as file:
-            file.write("Task,Finished,Time")
+            file.write("Task,Finished")
